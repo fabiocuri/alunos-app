@@ -10,6 +10,7 @@
 <body>
     <h1>Olá Eduardo!</h1>
     <h2>Por favor, faça upload dos seus documentos com formato .xlsx aqui abaixo.</h2>
+
     <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="files[]" multiple>
         <button type="submit">Upload</button>
@@ -17,22 +18,37 @@
 
     <div id="results"></div>
 
-    <!-- Button to download a random dataframe -->
-    <button onclick="window.location.href='/download_random'">Download Random DataFrame as XLSX</button>
+    <!-- New Message for Data Ready -->
+    <div id="data-status" style="display: none;">
+        <h2>Data is ready</h2>
+        <button id="download-results" onclick="downloadResults()">Download Results</button>
+    </div>
 
     <script>
         const form = document.getElementById('upload-form');
+        const resultsDiv = document.getElementById('results');
+        const dataStatusDiv = document.getElementById('data-status');
+        const downloadButton = document.getElementById('download-results');
+
         form.addEventListener('submit', async(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(form);
-                    const response = await fetch('/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const data = await response.json();
-                    const resultsDiv = document.getElementById('results');
-                    resultsDiv.innerHTML = `<h2>Results</h2><ul>${data.results.map(r => `<li>${r}</li>`).join('')}</ul>`;
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            // Show the "Data is ready" message and the download button
+            resultsDiv.innerHTML = `<h2>Results uploaded successfully!</h2>`;
+            dataStatusDiv.style.display = 'block'; // Display the "Data is ready" message
         });
+
+        // Function to handle downloading the results
+        function downloadResults() {
+            window.location.href = '/download_results';
+        }
     </script>
 </body>
 
