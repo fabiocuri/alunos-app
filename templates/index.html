@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel File Uploader</title>
+</head>
+
+<body>
+    <h1>Olá Eduardo!</h1>
+    <h2>Por favor, faça upload dos seus documentos com formato .xlsx aqui abaixo.</h2>
+    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="files[]" multiple>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="results"></div>
+
+    <!-- Button to download a random dataframe -->
+    <button onclick="window.location.href='/download_random'">Download Random DataFrame as XLSX</button>
+
+    <script>
+        const form = document.getElementById('upload-form');
+        form.addEventListener('submit', async(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    const response = await fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = `<h2>Results</h2><ul>${data.results.map(r => `<li>${r}</li>`).join('')}</ul>`;
+        });
+    </script>
+</body>
+
+</html>
