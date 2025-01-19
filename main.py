@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 
 # Define the folder path for file uploads
-UPLOAD_FOLDER = "Forms/AV1"
+UPLOAD_FOLDER = ""
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
