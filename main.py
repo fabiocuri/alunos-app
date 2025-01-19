@@ -8,12 +8,10 @@ import os
 
 app = Flask(__name__)
 
-
 # Utility function to ensure folder exists
 def ensure_folder(folder_path):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-
 
 # General preprocessing function
 def preprocess_generic(data, upper=False, remove_punct=True):
@@ -32,21 +30,17 @@ def preprocess_generic(data, upper=False, remove_punct=True):
         processed.append(text)
     return processed
 
-
 # Preprocess CPF column specifically (no special characters but keep lowercase)
 def preprocess_cpf(data):
     return [str(x).translate(str.maketrans("", "", string.punctuation)).lower().rstrip().lstrip() for x in data]
 
-
 # Store the processed DataFrame globally
 processed_data = None
-
 
 @app.route("/")
 def home():
     # Serve index.html directly from the root folder
     return send_from_directory(directory=".", path="index.html")
-
 
 @app.route("/upload", methods=["POST"])
 def upload_files():
@@ -59,10 +53,12 @@ def upload_files():
 
     for file in files:
         try:
-            file.save(file.filename)
+            file_path = os.path.join('uploads', file.filename)
+            ensure_folder('uploads')
+            file.save(file_path)
 
             # Load and preprocess the Excel file
-            df = pd.read_excel(file.filename)
+            df = pd.read_excel(file_path)
 
             # Normalize column names
             df.columns = preprocess_generic(df.columns)
@@ -124,7 +120,6 @@ def upload_files():
 
     return jsonify({"message": "Files uploaded and processed successfully!"})
 
-
 @app.route("/download_results", methods=["GET"])
 def download_results():
     if processed_data is None:
@@ -143,7 +138,6 @@ def download_results():
         download_name="processed_data.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)
