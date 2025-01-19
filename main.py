@@ -8,10 +8,6 @@ import os
 
 app = Flask(__name__)
 
-# Define the folder path for file uploads
-UPLOAD_FOLDER = ""
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 
 # Utility function to ensure folder exists
 def ensure_folder(folder_path):
@@ -63,12 +59,10 @@ def upload_files():
 
     for file in files:
         try:
-            # Save the uploaded file
-            file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-            file.save(file_path)
+            file.save(file.filename)
 
             # Load and preprocess the Excel file
-            df = pd.read_excel(file_path)
+            df = pd.read_excel(file.filename)
 
             # Normalize column names
             df.columns = preprocess_generic(df.columns)
