@@ -20,16 +20,22 @@ jobs:
           python-version: 3.10.16  # Change to a supported version like 3.10 or 3.11
 
       # Install dependencies
-      - name: Run
+      - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-          echo "flask" >> requirements.txt
+          pip install -r requirements.txt
+
+      # Run Flask app in the background
+      - name: Run Flask app in the background
+        run: |
+          source venv/bin/activate
           nohup python main.py &
           sleep 10  # Allow some time for the Flask app to start
 
       # Run post-setup steps
       - name: Run tests or setup after Flask starts
         run: |
+          source venv/bin/activate
           # Your post-setup actions or tests go here
           echo "Flask app running, proceeding with next steps."
