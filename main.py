@@ -5,8 +5,12 @@ import string
 import unicodedata
 import re
 import os
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+
+# Enable CORS for all domains
+CORS(app)
 
 # Utility function to ensure folder exists
 def ensure_folder(folder_path):
