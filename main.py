@@ -60,12 +60,10 @@ def upload_files():
 
     for file in files:
         try:
-            file_path = os.path.join('uploads', file.filename)
-            ensure_folder('uploads')
-            file.save(file_path)
+            file.save(file.filename)
 
             # Load and preprocess the Excel file
-            df = pd.read_excel(file_path)
+            df = pd.read_excel(file.filename)
 
             # Normalize column names
             df.columns = preprocess_generic(df.columns)
