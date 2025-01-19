@@ -13,11 +13,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      # Set up Python
+      # Set up Python (ensure to use a supported version like 3.10 or 3.11)
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
-          python-version: 3.10
+          python-version: 3.10  # Use a valid version here (e.g., 3.10, 3.11)
 
       # Install dependencies
       - name: Install dependencies
@@ -26,7 +26,7 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      # Start Flask app in the background
+      # Run Flask app in the background
       - name: Run Flask app in the background
         run: |
           nohup python main.py &
@@ -37,5 +37,3 @@ jobs:
         run: |
           # Your post-setup actions or tests go here
           echo "Flask app running, proceeding with next steps."
-
-      # Add additional steps here if needed (e.g., tests, deployment)
