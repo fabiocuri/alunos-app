@@ -53,6 +53,9 @@ def upload_files():
         return jsonify({"error": "No files uploaded"}), 400
 
     files = request.files.getlist("files[]")
+    print(f"Files uploaded: {[file.filename for file in files]}")  # Debug print
+
+    files = request.files.getlist("files[]")
     uploaded_dataframes = []
 
     for file in files:
