@@ -10,7 +10,7 @@ from flask_cors import CORS  # Import CORS
 app = Flask(__name__)
 
 # Enable CORS for all domains
-CORS(app)
+CORS(app, origins="https://fabiocuri.github.io/alunos-app")
 
 # Utility function to ensure folder exists
 def ensure_folder(folder_path):
