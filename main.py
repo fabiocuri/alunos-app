@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, send_file
+from flask import Flask, request, render_template, jsonify, send_file, send_from_directory
 import pandas as pd
 import io
 import string
@@ -48,7 +48,8 @@ processed_data = None
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    # Serve index.html directly from the root folder
+    return send_from_directory(directory=".", path="index.html")
 
 
 @app.route("/upload", methods=["POST"])
