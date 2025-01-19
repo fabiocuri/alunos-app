@@ -4,11 +4,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel File Uploader</title>
+    <title>Alunos App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        #upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #ffffff;
+            padding: 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        input[type="file"] {
+            margin-bottom: 15px;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        button[type="submit"],
+        button#download-results {
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button[type="submit"]:hover,
+        button#download-results:hover {
+            background-color: #2980b9;
+        }
+        
+        button#download-results {
+            margin-top: 15px;
+        }
+        
+        #results h2 {
+            color: #27ae60;
+            margin-top: 20px;
+        }
+        
+        #data-status {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        #data-status h2 {
+            color: #2c3e50;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Olá Eduardo!</h1>
+    <h1>Olá, Eduardo!</h1>
     <h2>Por favor, faça upload dos seus documentos com formato .xlsx aqui abaixo.</h2>
 
     <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
@@ -18,10 +98,10 @@
 
     <div id="results"></div>
 
-    <!-- New Message for Data Ready -->
+    <!-- Message for Data Ready -->
     <div id="data-status" style="display: none;">
-        <h2>Data is ready</h2>
-        <button id="download-results" onclick="downloadResults()">Download Results</button>
+        <h2>Agora você pode baixar os resultados</h2>
+        <button id="download-results" onclick="downloadResults()">Baixar resultados</button>
     </div>
 
     <script>
@@ -34,15 +114,29 @@
             e.preventDefault();
             const formData = new FormData(form);
 
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
+            resultsDiv.innerHTML = `<h2>Carregando documentos...</h2>`;
+            resultsDiv.style.color = '#e67e22';
 
-            // Show the "Data is ready" message and the download button
-            resultsDiv.innerHTML = `<h2>Results uploaded successfully!</h2>`;
-            dataStatusDiv.style.display = 'block'; // Display the "Data is ready" message
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.innerHTML = `<h2>${data.message || 'Documentos carregados!'}</h2>`;
+                    resultsDiv.style.color = '#27ae60';
+                    dataStatusDiv.style.display = 'block'; // Show the "Data is ready" message
+                } else {
+                    const errorData = await response.json();
+                    resultsDiv.innerHTML = `<h2>Erro: ${errorData.error || 'Algo deu errado'}</h2>`;
+                    resultsDiv.style.color = '#c0392b';
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<h2>Erro de rede: Verifique sua conexão.</h2>`;
+                resultsDiv.style.color = '#c0392b';
+            }
         });
 
         // Function to handle downloading the results
